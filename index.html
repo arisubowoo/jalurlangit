@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalur Langit - Tracker Ibadah Harian</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Nunito -->
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti for Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="#pwa-manifest">
+
+    <style>
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 90px;
+        }
+        .glass-card {
+            background: rgba(30, 27, 75, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 1.25rem;
+        }
+        .glass-nav {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(139, 92, 246, 0.2);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.7);
+        }
+        .checkbox-custom {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .animate-bounce-slow {
+            animation: bounce 3s infinite;
+        }
+    </style>
+
+    <!-- Inline Dynamic PWA Manifest Generator -->
+    <script>
+        const manifestData = {
+            "name": "Jalur Langit Tracker",
+            "short_name": "JalurLangit",
+            "start_url": "./",
+            "display": "standalone",
+            "background_color": "#0f172a",
+            "theme_color": "#1e1b4b",
+            "icons": [
+                {
+                    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%237c3aed'/><text x='50' y='65' font-size='50' text-anchor='middle' fill='white'>🌙</text></svg>",
+                    "sizes": "192x192",
+                    "type": "image/svg+xml"
+                }
+            ]
+        };
+        const stringManifest = JSON.stringify(manifestData);
+        const blob = new Blob([stringManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        document.write('<link id="dynamic-manifest" rel="manifest" href="' + manifestURL + '">');
+    </script>
+</head>
+<body class="max-w-md mx-auto relative antialiased selection:bg-purple-500 selection:text-white">
+
+    <!-- Header / Sapaan -->
+    <header class="pt-6 px-4 pb-2 flex justify-between items-center">
+        <div>
+            <h1 class="text-xs uppercase tracking-widest text-purple-400 font-bold">Aplikasi Ibadah Harian</h1>
+            <h2 class="text-2xl font-extrabold text-white mt-0.5 flex items-center gap-2">
+                Assalamu'alaikum <span class="text-yellow-400">✨</span>
+            </h2>
+        </div>
+        <button onclick="installPWA()" id="installBtn" class="hidden bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg shadow-purple-900/40 flex items-center gap-1.5 active:scale-95 transition">
+            <i class="fa-solid fa-download"></i> Install App
+        </button>
+    </header>
+
+    <!-- Mascot Bear Widget -->
+    <section class="px-4 my-3">
+        <div class="glass-card p-3 flex items-center gap-3 relative overflow-hidden group">
+            <div class="absolute -right-6 -bottom-6 w-24 h-24 bg-purple-500/10 rounded-full blur-xl pointer-events-none"></div>
+            <!-- Cute SVG Bear Mascot -->
+            <div class="w-14 h-14 shrink-0 bg-purple-900/50 rounded-2xl p-1 flex items-center justify-center border border-purple-500/30 shadow-inner">
+                <svg viewBox="0 0 100 100" class="w-12 h-12 drop-shadow-md">
+                    <!-- Ears -->
+                    <circle cx="28" cy="30" r="14" fill="#a78bfa" />
+                    <circle cx="28" cy="30" r="8" fill="#e9d5ff" />
+                    <circle cx="72" cy="30" r="14" fill="#a78bfa" />
+                    <circle cx="72" cy="30" r="8" fill="#e9d5ff" />
+                    <!-- Head -->
+                    <circle cx="50" cy="55" r="32" fill="#c4b5fd" />
+                    <!-- Snout -->
+                    <ellipse cx="50" cy="62" rx="14" ry="10" fill="#ede9fe" />
+                    <ellipse cx="50" cy="58" rx="6" ry="4" fill="#4c1d95" />
+                    <!-- Eyes -->
+                    <circle cx="38" cy="48" r="3.5" fill="#4c1d95" />
+                    <circle cx="62" cy="48" r="3.5" fill="#4c1d95" />
+                    <circle cx="39" cy="47" r="1" fill="#ffffff" />
+                    <circle cx="63" cy="47" r="1" fill="#ffffff" />
+                    <!-- Cheeks -->
+                    <circle cx="32" cy="58" r="4" fill="#f472b6" opacity="0.6" />
+                    <circle cx="68" cy="58" r="4" fill="#f472b6" opacity="0.6" />
+                    <!-- Smile -->
+                    <path d="M 46 66 Q 50 71 54 66" stroke="#4c1d95" stroke-width="2.5" fill="none" stroke-linecap="round" />
+                </svg>
+            </div>
+            <!-- Speech Bubble -->
+            <div class="flex-1 bg-purple-950/40 border border-purple-500/20 rounded-2xl p-2.5 text-xs text-purple-200 relative shadow-sm">
+                <div class="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 bg-purple-950/40 border-l border-b border-purple-500/20 rotate-45"></div>
+                <p id="mascotQuote" class="font-medium italic leading-relaxed">"Semangat! Allah melihat setiap usaha kecilmu hari ini. ✨"</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="px-4 pb-8">
+
+        <!-- ================= TAB 1: IBADAH ================= -->
+        <div id="tab-ibadah" class="tab-content space-y-4">
+            <!-- Date Selector -->
+            <div class="glass-card p-3 flex items-center justify-between">
+                <button onclick="changeDate(-1)" class="w-9 h-9 rounded-xl bg-purple-900/40 hover:bg-purple-800/60 flex items-center justify-center text-purple-300 transition active:scale-90">
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <div class="text-center">
+                    <div id="currentDateDisplay" class="font-bold text-sm text-white">Kamis, 14 Nov 2026</div>
+                    <button onclick="goToToday()" class="text-[10px] text-purple-400 hover:underline font-semibold">Kembali ke Hari Ini</button>
+                </div>
+                <button onclick="changeDate(1)" class="w-9 h-9 rounded-xl bg-purple-900/40 hover:bg-purple-800/60 flex items-center justify-center text-purple-300 transition active:scale-90">
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+            </div>
+
+            <!-- 3 Summary Cards -->
+            <div class="grid grid-cols-3 gap-2.5">
+                <div class="glass-card p-3 text-center flex flex-col items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center mb-1 text-sm">
+                        <i class="fa-solid fa-kaaba"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-300 font-medium">Shalat Wajib</span>
+                    <span id="summaryWajib" class="text-base font-extrabold text-white mt-0.5">0/5</span>
+                </div>
+                <div class="glass-card p-3 text-center flex flex-col items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center mb-1 text-sm">
+                        <i class="fa-solid fa-star"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-300 font-medium">Sunnah</span>
+                    <span id="summarySunnah" class="text-base font-extrabold text-white mt-0.5">0/22</span>
+                </div>
+                <div class="glass-card p-3 text-center flex flex-col items-center justify-center">
+                    <div class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mb-1 text-sm">
+                        <i class="fa-solid fa-fire"></i>
+                    </div>
+                    <span class="text-[10px] text-slate-300 font-medium">Streak Hari</span>
+                    <span id="summaryStreak" class="text-base font-extrabold text-amber-400 mt-0.5">0 🌟</span>
+                </div>
+            </div>
+
+            <!-- Daily Progress Bar Card -->
+            <div class="glass-card p-4 space-y-2">
+                <div class="flex justify-between items-center text-xs font-semibold">
+                    <span class="text-purple-200">Progres Amalan Harian</span>
+                    <span id="progressPercentText" class="text-purple-400">0%</span>
+                </div>
+                <div class="w-full bg-purple-950/60 rounded-full h-2.5 overflow-hidden p-0.5 border border-purple-500/20">
+                    <div id="progressBarFill" class="bg-gradient-to-r from-purple-500 to-indigo-400 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+                <!-- Mini dots representation -->
+                <div id="progressDots" class="flex flex-wrap gap-1 pt-1 justify-center">
+                    <!-- Dynamic dots generated via JS -->
+                </div>
+            </div>
+
+            <!-- Amalan Checklist Sections -->
+            <div id="checklistContainer" class="space-y-4">
+                <!-- Rendered dynamically by JS -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: REKAP ================= -->
+        <div id="tab-rekap" class="tab-content hidden space-y-4">
+            <!-- Period Selector Tabs -->
+            <div class="flex bg-purple-950/60 p-1 rounded-xl border border-purple-500/20">
+                <button onclick="switchRekapTab('weekly')" id="btnWeekly" class="flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white transition shadow">Mingguan (7 Hari)</button>
+                <button onclick="switchRekapTab('monthly')" id="btnMonthly" class="flex-1 py-2 text-xs font-bold rounded-lg text-purple-300 hover:text-white transition">Bulanan (30 Hari)</button>
+            </div>
+
+            <!-- Rekap Overview Cards -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass-card p-3.5 text-center">
+                    <span class="text-[11px] text-purple-300 font-medium">Rata-rata Progres</span>
+                    <div id="rekapAvgProgress" class="text-2xl font-extrabold text-white mt-1">0%</div>
+                </div>
+                <div class="glass-card p-3.5 text-center">
+                    <span class="text-[11px] text-purple-300 font-medium">Wajib Lengkap</span>
+                    <div id="rekapWajibLengkap" class="text-2xl font-extrabold text-purple-400 mt-1">0 / 7</div>
+                </div>
+            </div>
+
+            <div class="glass-card p-3.5 flex justify-between items-center">
+                <span class="text-xs text-purple-200 font-medium">Total Amalan Selesai Periode Ini</span>
+                <span id="rekapTotalAmalan" class="text-lg font-bold text-yellow-400">0</span>
+            </div>
+
+            <!-- Bar Chart Component -->
+            <div class="glass-card p-4 space-y-3">
+                <h3 class="text-xs font-bold text-purple-200 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-chart-column text-purple-400"></i> Grafik Progres Harian
+                </h3>
+                <div id="chartContainer" class="flex items-end justify-between gap-1 h-36 pt-4 pb-2 px-1 border-b border-purple-500/20">
+                    <!-- Bars generated by JS -->
+                </div>
+                <div id="chartLabels" class="flex justify-between text-[10px] text-purple-300 px-1">
+                    <!-- Labels generated by JS -->
+                </div>
+            </div>
+
+            <!-- Category Breakdown Progress -->
+            <div class="glass-card p-4 space-y-3">
+                <h3 class="text-xs font-bold text-purple-200 uppercase tracking-wider flex items-center gap-1.5">
+                    <i class="fa-solid fa-list-check text-purple-400"></i> Pencapaian Per Kategori
+                </h3>
+                <div id="categoryBreakdownList" class="space-y-3">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: PANDUAN ================= -->
+        <div id="tab-panduan" class="tab-content hidden space-y-3">
+            <div class="glass-card p-4">
+                <h3 class="text-sm font-bold text-purple-200 mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open text-purple-400"></i> Panduan Amalan Jalur Langit
+                </h3>
+                <p class="text-xs text-slate-300 leading-relaxed mb-3">
+                    "Jalur Langit" adalah metafora untuk amalan-amalan vertikal yang mendekatkan diri kepada Allah SWT. Dengan istiqamah pada amalan wajib dan sunnah, pintu-pintu kemudahan akan dibukakan.
+                </p>
+                <div class="space-y-2" id="accordionPanduan">
+                    <!-- Rendered via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: DOA ================= -->
+        <div id="tab-doa" class="tab-content hidden space-y-3">
+            <div class="flex gap-2 mb-2">
+                <div class="relative flex-1">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-xs text-purple-400"></i>
+                    <input type="text" id="searchDoa" oninput="renderDoaList()" placeholder="Cari doa..." class="w-full bg-purple-950/60 border border-purple-500/20 rounded-xl py-2 pl-9 pr-3 text-xs text-white placeholder-purple-400/60 focus:outline-none focus:border-purple-400">
+                </div>
+            </div>
+            <div id="doaContainer" class="space-y-3">
+                <!-- Rendered via JS -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: SYUKUR ================= -->
+        <div id="tab-syukur" class="tab-content hidden space-y-3">
+            <div class="glass-card p-4 space-y-3">
+                <h3 class="text-sm font-bold text-purple-200 flex items-center gap-2">
+                    <i class="fa-solid fa-heart text-pink-400"></i> Jurnal Syukur Harian
+                </h3>
+                <p class="text-xs text-slate-300">Catat minimal 3 nikmat yang kamu syukuri hari ini agar hati senantiasa tenang dan berkelimpahan.</p>
+                <textarea id="syukurInput" rows="3" placeholder="Contoh: Alhamdulillah hari ini masih diberi kesehatan, bisa shalat tepat waktu, dan rezeki tak terduga..." class="w-full bg-purple-950/60 border border-purple-500/20 rounded-xl p-3 text-xs text-white placeholder-purple-400/60 focus:outline-none focus:border-purple-400 resize-none"></textarea>
+                <button onclick="saveSyukur()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-2.5 rounded-xl text-xs font-bold shadow-lg shadow-purple-900/40 active:scale-95 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-floppy-disk"></i> Simpan Rasa Syukur
+                </button>
+            </div>
+
+            <div class="space-y-2.5">
+                <h4 class="text-xs font-bold text-purple-300 uppercase tracking-wider px-1">Riwayat Syukur Anda</h4>
+                <div id="syukurHistoryList" class="space-y-2.5">
+                    <!-- Rendered via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: QUR'AN ================= -->
+        <div id="tab-quran" class="tab-content hidden space-y-3">
+            <div class="glass-card p-4 space-y-3">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-sm font-bold text-purple-200 flex items-center gap-2">
+                        <i class="fa-solid fa-book text-emerald-400"></i> Target & Tilawah Qur'an
+                    </h3>
+                    <span id="quranProgressBadge" class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">Juz 1</span>
+                </div>
+                <p class="text-xs text-slate-300">Catat progress tilawah harianmu agar senantiasa dekat dengan Kalam Ilahi.</p>
+                
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <div>
+                        <label class="text-[11px] text-purple-300 font-medium block mb-1">Pilih Juz (1-30)</label>
+                        <select id="quranJuzSelect" onchange="saveQuranProgress()" class="w-full bg-purple-950/60 border border-purple-500/20 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-purple-400">
+                            <!-- Options 1-30 -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-purple-300 font-medium block mb-1">Halaman / Ayat</label>
+                        <input type="text" id="quranDetailInput" oninput="saveQuranProgress()" placeholder="Contoh: Hal 15 / Al-Baqarah" class="w-full bg-purple-950/60 border border-purple-500/20 rounded-xl p-2 text-xs text-white placeholder-purple-400/60 focus:outline-none focus:border-purple-400">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Surah Pilihan -->
+            <div class="glass-card p-4 space-y-3">
+                <h4 class="text-xs font-bold text-purple-200 uppercase tracking-wider">Surah Pilihan Jalur Langit</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="openSurahModal('Al-Waqiah')" class="p-3 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/20 rounded-xl text-left transition flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-white">Al-Waqiah</div>
+                            <div class="text-[10px] text-purple-300">Pembuka Rezeki</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-purple-400"></i>
+                    </button>
+                    <button onclick="openSurahModal('Ar-Rahman')" class="p-3 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/20 rounded-xl text-left transition flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-white">Ar-Rahman</div>
+                            <div class="text-[10px] text-purple-300">Nikmat Tuhan</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-purple-400"></i>
+                    </button>
+                    <button onclick="openSurahModal('Al-Mulk')" class="p-3 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/20 rounded-xl text-left transition flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-white">Al-Mulk</div>
+                            <div class="text-[10px] text-purple-300">Penyelamat Siksa</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-purple-400"></i>
+                    </button>
+                    <button onclick="openSurahModal('Yasin')" class="p-3 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-500/20 rounded-xl text-left transition flex items-center justify-between">
+                        <div>
+                            <div class="text-xs font-bold text-white">Yasin</div>
+                            <div class="text-[10px] text-purple-300">Jantung Al-Qur'an</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-[10px] text-purple-400"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Bar (6 Tabs) -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto glass-nav px-2 py-2 flex justify-around items-center z-50 shadow-2xl">
+        <button onclick="switchTab('ibadah')" id="nav-ibadah" class="nav-btn flex flex-col items-center gap-1 text-purple-400 transition flex-1 py-1">
+            <i class="fa-solid fa-mosque text-base"></i>
+            <span class="text-[10px] font-bold">Ibadah</span>
+        </button>
+        <button onclick="switchTab('rekap')" id="nav-rekap" class="nav-btn flex flex-col items-center gap-1 text-purple-400/60 hover:text-purple-300 transition flex-1 py-1">
+            <i class="fa-solid fa-chart-pie text-base"></i>
+            <span class="text-[10px] font-semibold">Rekap</span>
+        </button>
+        <button onclick="switchTab('panduan')" id="nav-panduan" class="nav-btn flex flex-col items-center gap-1 text-purple-400/60 hover:text-purple-300 transition flex-1 py-1">
+            <i class="fa-solid fa-book-bookmark text-base"></i>
+            <span class="text-[10px] font-semibold">Panduan</span>
+        </button>
+        <button onclick="switchTab('doa')" id="nav-doa" class="nav-btn flex flex-col items-center gap-1 text-purple-400/60 hover:text-purple-300 transition flex-1 py-1">
+            <i class="fa-solid fa-hands-praying text-base"></i>
+            <span class="text-[10px] font-semibold">Doa</span>
+        </button>
+        <button onclick="switchTab('syukur')" id="nav-syukur" class="nav-btn flex flex-col items-center gap-1 text-purple-400/60 hover:text-purple-300 transition flex-1 py-1">
+            <i class="fa-solid fa-heart text-base"></i>
+            <span class="text-[10px] font-semibold">Syukur</span>
+        </button>
+        <button onclick="switchTab('quran')" id="nav-quran" class="nav-btn flex flex-col items-center gap-1 text-purple-400/60 hover:text-purple-300 transition flex-1 py-1">
+            <i class="fa-solid fa-book-quran text-base"></i>
+            <span class="text-[10px] font-semibold">Qur'an</span>
+        </button>
+    </nav>
+
+    <!-- Custom Modal / Popup (No alert/confirm) -->
+    <div id="customModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card max-w-sm w-full p-5 space-y-4 shadow-2xl border border-purple-500/40 text-center relative">
+            <div id="modalIcon" class="w-12 h-12 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-bell"></i>
+            </div>
+            <div>
+                <h3 id="modalTitle" class="text-base font-bold text-white mb-1">Informasi</h3>
+                <p id="modalMessage" class="text-xs text-slate-300 leading-relaxed">Pesan keterangan di sini.</p>
+            </div>
+            <button onclick="closeModal()" class="w-full bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-xl text-xs font-bold transition shadow-md">
+                Tutup
+            </button>
+        </div>
+    </div>
+
+    <!-- Surah / Reading Modal -->
+    <div id="surahModal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="glass-card max-w-md w-full max-h-[85vh] flex flex-col p-5 shadow-2xl border border-purple-500/40 relative">
+            <div class="flex justify-between items-center mb-3 pb-2 border-b border-purple-500/20">
+                <h3 id="surahModalTitle" class="text-base font-bold text-white">Surah</h3>
+                <button onclick="closeSurahModal()" class="w-8 h-8 rounded-full bg-purple-900/40 hover:bg-purple-800 flex items-center justify-center text-purple-300">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+            <div id="surahModalContent" class="overflow-y-auto space-y-3 pr-1 text-xs text-slate-200 leading-relaxed">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript -->
+    <script>
+        // Data Structure & Definition
+        const AMALAN_CATEGORIES = [
+            {
+                id: 'sepertiga_malam',
+                title: '🌙 Sepertiga Malam',
+                items: [
+                    { id: 'tahajud', label: 'Shalat Tahajud (min 2 rakaat)' },
+                    { id: 'taubat', label: 'Shalat Taubat' },
+                    { id: 'hajat', label: 'Shalat Hajat' },
+                    { id: 'witir', label: 'Shalat Witir' }
+                ]
+            },
+            {
+                id: 'shubuh',
+                title: '🌅 Shubuh',
+                items: [
+                    { id: 'qobliyah_subuh', label: 'Rawatib Qobliyah Shubuh (Fajar)' },
+                    { id: 'shalat_subuh', label: 'Shalat Wajib Shubuh', wajib: true },
+                    { id: 'dzikir_pagi', label: 'Dzikir Pagi' }
+                ]
+            },
+            {
+                id: 'dzuhur',
+                title: '☀️ Dzuhur',
+                items: [
+                    { id: 'qobliyah_dzuhur', label: 'Rawatib Qobliyah Dzuhur' },
+                    { id: 'shalat_dzuhur', label: 'Shalat Wajib Dzuhur', wajib: true },
+                    { id: 'badiyah_dzuhur', label: 'Rawatib Ba’diyah Dzuhur' }
+                ]
+            },
+            {
+                id: 'ashar',
+                title: '🌤️ Ashar',
+                items: [
+                    { id: 'qobliyah_ashar', label: 'Rawatib Qobliyah Ashar (Sunnah)' },
+                    { id: 'shalat_ashar', label: 'Shalat Wajib Ashar', wajib: true }
+                ]
+            },
+            {
+                id: 'maghrib',
+                title: '🌇 Maghrib',
+                items: [
+                    { id: 'shalat_maghrib', label: 'Shalat Wajib Maghrib', wajib: true },
+                    { id: 'badiyah_maghrib', label: 'Rawatib Ba’diyah Maghrib' },
+                    { id: 'dzikir_petang', label: 'Dzikir Petang' }
+                ]
+            },
+            {
+                id: 'isya',
+                title: '🌙 Isya',
+                items: [
+                    { id: 'qobliyah_isya', label: 'Rawatib Qobliyah Isya' },
+                    { id: 'shalat_isya', label: 'Shalat Wajib Isya', wajib: true },
+                    { id: 'badiyah_isya', label: 'Rawatib Ba’diyah Isya' }
+                ]
+            },
+            {
+                id: 'dhuha',
+                title: '☀️ Shalat Dhuha',
+                items: [
+                    { id: 'dhuha_2', label: 'Dhuha (2 - 4 Rakaat)' },
+                    { id: 'dhuha_6', label: 'Dhuha (6 - 8 Rakaat)' },
+                    { id: 'dhuha_12', label: 'Dhuha (12 Rakaat / Full)' }
+                ]
+            },
+            {
+                id: 'dzikir_shalawat',
+                title: '📿 Dzikir & Shalawat',
+                items: [
+                    { id: 'istighfar_100', label: 'Istighfar 100x' },
+                    { id: 'shalawat_100', label: 'Shalawat Nabi 100x' },
+                    { id: 'sedekah_subuh', label: 'Sedekah Subuh / Harian' },
+                    { id: 'tilawah', label: 'Tilawah Al-Qur’an (min 1 lembar)' }
+                ]
+            }
+        ];
+
+        const PANDUAN_DATA = [
+            {
+                title: "Mengapa Jalur Langit?",
+                desc: "Jalur Langit adalah ikhtiar batin dengan memaksimalkan amalan sunnah rawatib, tahajud, dhuha, sedekah, dan dzikir agar pertolongan Allah (Nusrah) turun langsung dalam urusan dunia maupun akhirat."
+            },
+            {
+                title: "Tata Cara Shalat Tahajud & Hajat",
+                desc: "Dilaksanakan sepertiga malam terakhir setelah tidur walau sebentar. Minimal 2 rakaat ditutup witir. Diikuti doa khusyuk memohon hajat terbaik kepada Sang Pencipta."
+            },
+            {
+                title: "Keutamaan Rawatib Qobliyah Shubuh",
+                desc: "Rasulullah SAW bersabda bahwa dua rakaat fajar (qobliyah shubuh) lebih baik daripada dunia dan seisinya (HR. Muslim)."
+            },
+            {
+                title: "Dahsyatnya Sedekah Subuh",
+                desc: "Setiap pagi dua malaikat turun berdoa: 'Ya Allah, berikanlah ganti bagi orang yang berinfak.' Sangat mujarab untuk membuka pintu rezeki."
+            }
+        ];
+
+        const DOA_DATA = [
+            {
+                title: "Doa Memohon Kemudahan & Rezeki",
+                arab: "اللَّهُمَّ إِنِّى أَسْأalُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلًا مُتَقَبَّلًا",
+                arti: "Ya Allah, sesungguhnya aku memohon kepada-Mu ilmu yang bermanfaat, rezeki yang baik, dan amal yang diterima."
+            },
+            {
+                title: "Doa Ketenangan Hati & Hilang Kegundahan",
+                arab: "اللَّهُمَّ إِنِّى عَبْدُكَ ابْنُ عَبْدِكَ ابْنُ أَمَتِكَ نَاصِيَتِي بِيَدِكَ...",
+                arti: "Ya Allah, sesungguhnya aku adalah hamba-Mu, anak hamba laki-laki-Mu, anak hamba perempuan-Mu, ubun-ubunku di tangan-Mu..."
+            },
+            {
+                title: "Doa Sapu Jagat (Dunia & Akhirat)",
+                arab: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+                arti: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, serta peliharalah kami dari siksa neraka."
+            },
+            {
+                title: "Doa Dimudahkan Segala Urusan",
+                arab: "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِّن لِّسَانِي يَفْقَهُوا قَوْلِي",
+                arti: "Ya Tuhanku, lapangkanlah dadaku, mudahkanlah untukku urusanku, dan lepaskanlah kekakuan dari lidahku, agar mereka mengerti perkataanku."
+            }
+        ];
+
+        const MASCOT_QUOTES = [
+            "Semangat! Allah melihat setiap usaha kecilmu hari ini. ✨",
+            "Konsistensi kecil lebih dicintai Allah daripada amal besar yang terputus. 🌙",
+            "Jangan lupa sedekah subuh hari ini ya! 💛",
+            "Langit saja mendengar bisikanmu, apalagi doa tulusmu. 🤲",
+            "Fokus pada akhirat, maka dunia akan mengikutimu. 🌟",
+            "Istigfar penjemput rezeki dan penghapus dosa. Yuk bacakan! 📿"
+        ];
+
+        // State Management
+        let currentDate = new Date();
+        let currentTab = 'ibadah';
+        let rekapMode = 'weekly';
+
+        // Initialize App
+        window.onload = function() {
+            populateJuzDropdown();
+            updateDateDisplay();
+            renderChecklist();
+            updateSummaryAndProgress();
+            renderRekap();
+            renderPanduan();
+            renderDoaList();
+            renderSyukurHistory();
+            loadQuranProgress();
+            setRandomMascotQuote();
+
+            // PWA Install Prompt setup
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                window.deferredPrompt = e;
+                document.getElementById('installBtn').classList.remove('hidden');
+            });
+        };
+
+        function setRandomMascotQuote() {
+            const quote = MASCOT_QUOTES[Math.floor(Math.random() * MASCOT_QUOTES.length)];
+            document.getElementById('mascotQuote').innerText = `"${quote}"`;
+        }
+
+        // Date Helpers
+        function formatDateKey(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function updateDateDisplay() {
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const formatted = currentDate.toLocaleDateString('id-ID', options);
+            document.getElementById('currentDateDisplay').innerText = formatted;
+        }
+
+        function changeDate(days) {
+            currentDate.setDate(currentDate.getDate() + days);
+            updateDateDisplay();
+            renderChecklist();
+            updateSummaryAndProgress();
+        }
+
+        function goToToday() {
+            currentDate = new Date();
+            updateDateDisplay();
+            renderChecklist();
+            updateSummaryAndProgress();
+        }
+
+        // Storage Helpers
+        function getStoredData(dateKey) {
+            const data = localStorage.getItem(`jalur_langit_${dateKey}`);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveStoredData(dateKey, data) {
+            localStorage.setItem(`jalur_langit_${dateKey}`, JSON.stringify(data));
+        }
+
+        // Toggle Amalan
+        function toggleAmalan(itemId) {
+            const dateKey = formatDateKey(currentDate);
+            let data = getStoredData(dateKey);
+            data[itemId] = !data[itemId];
+            saveStoredData(dateKey, data);
+
+            renderChecklist();
+            updateSummaryAndProgress();
+
+            // Check if all wajib completed for celebration
+            if (checkAllWajibDone(dateKey)) {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        function checkAllWajibDone(dateKey) {
+            let data = getStoredData(dateKey);
+            let wajibItems = [];
+            AMALAN_CATEGORIES.forEach(cat => {
+                cat.items.forEach(item => {
+                    if (item.wajib) wajibItems.push(item.id);
+                });
+            });
+            if (wajibItems.length === 0) return false;
+            return wajibItems.every(id => data[id]);
+        }
+
+        // Calculate Streak
+        function calculateStreak() {
+            let streak = 0;
+            let d = new Date();
+            // check backwards from today
+            while (true) {
+                const key = formatDateKey(d);
+                let data = getStoredData(key);
+                let wajibItems = [];
+                AMALAN_CATEGORIES.forEach(cat => {
+                    cat.items.forEach(item => {
+                        if (item.wajib) wajibItems.push(item.id);
+                    });
+                });
+                
+                const allDone = wajibItems.length > 0 && wajibItems.every(id => data[id]);
+                if (allDone) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    // If today is not done yet, check yesterday before breaking streak
+                    if (streak === 0 && formatDateKey(d) === formatDateKey(new Date())) {
+                        d.setDate(d.getDate() - 1);
+                        const yesterdayKey = formatDateKey(d);
+                        let yData = getStoredData(yesterdayKey);
+                        const yDone = wajibItems.length > 0 && wajibItems.every(id => yData[id]);
+                        if (yDone) {
+                            streak++;
+                            d.setDate(d.getDate() - 1);
+                            continue;
+                        }
+                    }
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        // Render Checklist Tab
+        function renderChecklist() {
+            const dateKey = formatDateKey(currentDate);
+            let data = getStoredData(dateKey);
+            const container = document.getElementById('checklistContainer');
+            container.innerHTML = '';
+
+            AMALAN_CATEGORIES.forEach(cat => {
+                let catHtml = `
+                    <div class="glass-card p-4 space-y-2.5">
+                        <h3 class="text-xs font-extrabold text-purple-200 uppercase tracking-wider flex items-center gap-1.5 pb-1 border-b border-purple-500/10">
+                            ${cat.title}
+                        </h3>
+                        <div class="space-y-2">
+                `;
+
+                cat.items.forEach(item => {
+                    const isChecked = !!data[item.id];
+                    catHtml += `
+                        <div onclick="toggleAmalan('${item.id}')" class="flex items-center justify-between p-2.5 rounded-xl bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/15 cursor-pointer transition select-none group">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-5 h-5 rounded-lg flex items-center justify-center transition checkbox-custom ${isChecked ? 'bg-purple-600 text-white shadow-md shadow-purple-600/40' : 'bg-purple-950/80 border border-purple-500/30 text-transparent'}">
+                                    <i class="fa-solid fa-check text-[10px]"></i>
+                                </div>
+                                <span class="text-xs font-medium text-slate-200 group-hover:text-white transition ${isChecked ? 'line-through text-purple-300/70' : ''}">${item.label}</span>
+                            </div>
+                            ${item.wajib ? '<span class="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30">Wajib</span>' : ''}
+                        </div>
+                    `;
+                });
+
+                catHtml += `</div></div>`;
+                container.innerHTML += catHtml;
+            });
+        }
+
+        // Update Summary & Progress
+        function updateSummaryAndProgress() {
+            const dateKey = formatDateKey(currentDate);
+            let data = getStoredData(dateKey);
+
+            let totalWajibCount = 0;
+            let doneWajibCount = 0;
+            let totalSunnahCount = 0;
+            let doneSunnahCount = 0;
+            let totalAll = 0;
+            let doneAll = 0;
+
+            let dotsHtml = '';
+
+            AMALAN_CATEGORIES.forEach(cat => {
+                cat.items.forEach(item => {
+                    totalAll++;
+                    const isChecked = !!data[item.id];
+                    if (isChecked) doneAll++;
+
+                    if (item.wajib) {
+                        totalWajibCount++;
+                        if (isChecked) doneWajibCount++;
+                    } else {
+                        totalSunnahCount++;
+                        if (isChecked) doneSunnahCount++;
+                    }
+
+                    dotsHtml += `<div class="w-2 h-2 rounded-full transition-all ${isChecked ? 'bg-purple-400 shadow-sm shadow-purple-400' : 'bg-purple-950 border border-purple-500/30'}"></div>`;
+                });
+            });
+
+            document.getElementById('summaryWajib').innerText = `${doneWajibCount}/${totalWajibCount}`;
+            document.getElementById('summarySunnah').innerText = `${doneSunnahCount}/${totalSunnahCount}`;
+            document.getElementById('summaryStreak').innerText = `${calculateStreak()} 🌟`;
+
+            const percent = totalAll > 0 ? Math.round((doneAll / totalAll) * 100) : 0;
+            document.getElementById('progressPercentText').innerText = `${percent}%`;
+            document.getElementById('progressBarFill').style.width = `${percent}%`;
+            document.getElementById('progressDots').innerHTML = dotsHtml;
+        }
+
+        // Navigation Tabs
+        function switchTab(tabId) {
+            currentTab = tabId;
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-purple-400');
+                btn.classList.add('text-purple-400/60');
+            });
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            activeBtn.classList.remove('text-purple-400/60');
+            activeBtn.classList.add('text-purple-400');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (tabId === 'rekap') {
+                renderRekap();
+            }
+        }
+
+        // Rekap Tab Logic
+        function switchRekapTab(mode) {
+            rekapMode = mode;
+            if (mode === 'weekly') {
+                document.getElementById('btnWeekly').className = "flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white transition shadow";
+                document.getElementById('btnMonthly').className = "flex-1 py-2 text-xs font-bold rounded-lg text-purple-300 hover:text-white transition";
+            } else {
+                document.getElementById('btnMonthly').className = "flex-1 py-2 text-xs font-bold rounded-lg bg-purple-600 text-white transition shadow";
+                document.getElementById('btnWeekly').className = "flex-1 py-2 text-xs font-bold rounded-lg text-purple-300 hover:text-white transition";
+            }
+            renderRekap();
+        }
+
+        function renderRekap() {
+            const daysCount = rekapMode === 'weekly' ? 7 : 30;
+            let totalAmalanDonePeriod = 0;
+            let totalWajibLengkapCount = 0;
+            let totalPossiblePercent = 0;
+
+            let dailyDataPoints = [];
+
+            for (let i = daysCount - 1; i >= 0; i--) {
+                let d = new Date();
+                d.setDate(d.getDate() - i);
+                const key = formatDateKey(d);
+                let data = getStoredData(key);
+
+                let dayDone = 0;
+                let dayTotal = 0;
+                let dayWajibAllDone = true;
+                let hasWajib = false;
+
+                AMALAN_CATEGORIES.forEach(cat => {
+                    cat.items.forEach(item => {
+                        dayTotal++;
+                        if (data[item.id]) dayDone++;
+                        if (item.wajib) {
+                            hasWajib = true;
+                            if (!data[item.id]) dayWajibAllDone = false;
+                        }
+                    });
+                });
+
+                if (hasWajib && dayWajibAllDone) totalWajibLengkapCount++;
+                totalAmalanDonePeriod += dayDone;
+                const p = dayTotal > 0 ? Math.round((dayDone / dayTotal) * 100) : 0;
+                totalPossiblePercent += p;
+
+                const dayLabel = d.toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric' });
+                dailyDataPoints.push({ label: dayLabel, percent: p });
+            }
+
+            const avgProgress = Math.round(totalPossiblePercent / daysCount);
+            document.getElementById('rekapAvgProgress').innerText = `${avgProgress}%`;
+            document.getElementById('rekapWajibLengkap').innerText = `${totalWajibLengkapCount} / ${daysCount}`;
+            document.getElementById('rekapTotalAmalan').innerText = totalAmalanDonePeriod;
+
+            // Render Chart
+            const chartContainer = document.getElementById('chartContainer');
+            const chartLabels = document.getElementById('chartLabels');
+            chartContainer.innerHTML = '';
+            chartLabels.innerHTML = '';
+
+            // For monthly, show fewer bars or scrollable
+            const displayPoints = rekapMode === 'weekly' ? dailyDataPoints : dailyDataPoints.filter((_, idx) => idx % 3 === 0);
+
+            displayPoints.forEach(pt => {
+                chartContainer.innerHTML += `
+                    <div class="flex-1 flex flex-col items-center h-full justify-end group relative">
+                        <div class="absolute -top-6 bg-purple-900 text-white text-[9px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition pointer-events-none">${pt.percent}%</div>
+                        <div class="w-full max-w-[20px] bg-gradient-to-t from-purple-600 to-indigo-400 rounded-t-md transition-all duration-500" style="height: ${Math.max(pt.percent, 4)}%"></div>
+                    </div>
+                `;
+                chartLabels.innerHTML += `<div class="flex-1 text-center truncate">${pt.label}</div>`;
+            });
+
+            // Category breakdown list
+            const catListContainer = document.getElementById('categoryBreakdownList');
+            catListContainer.innerHTML = '';
+
+            AMALAN_CATEGORIES.forEach(cat => {
+                let catDone = 0;
+                let catTotal = 0;
+                for (let i = 0; i < daysCount; i++) {
+                    let d = new Date();
+                    d.setDate(d.getDate() - i);
+                    let data = getStoredData(formatDateKey(d));
+                    cat.items.forEach(item => {
+                        catTotal++;
+                        if (data[item.id]) catDone++;
+                    });
+                }
+                const catPercent = catTotal > 0 ? Math.round((catDone / catTotal) * 100) : 0;
+
+                catListContainer.innerHTML += `
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-slate-200 font-medium">${cat.title}</span>
+                            <span class="text-purple-300 font-bold">${catPercent}%</span>
+                        </div>
+                        <div class="w-full bg-purple-950/60 rounded-full h-2 overflow-hidden border border-purple-500/20">
+                            <div class="bg-gradient-to-r from-purple-500 to-indigo-400 h-full rounded-full" style="width: ${catPercent}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Panduan Tab Render
+        function renderPanduan() {
+            const container = document.getElementById('accordionPanduan');
+            container.innerHTML = '';
+            PANDUAN_DATA.forEach(p => {
+                container.innerHTML += `
+                    <div class="p-3 bg-purple-950/40 border border-purple-500/15 rounded-xl space-y-1">
+                        <h4 class="text-xs font-bold text-white flex items-center justify-between">
+                            ${p.title}
+                            <i class="fa-solid fa-chevron-down text-[10px] text-purple-400"></i>
+                        </h4>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">${p.desc}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Doa Tab Render
+        function renderDoaList() {
+            const query = document.getElementById('searchDoa').value.toLowerCase();
+            const container = document.getElementById('doaContainer');
+            container.innerHTML = '';
+
+            const filtered = DOA_DATA.filter(d => d.title.toLowerCase().includes(query) || d.arti.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-6 text-xs text-purple-400">Doa tidak ditemukan.</div>`;
+                return;
+            }
+
+            filtered.forEach(d => {
+                container.innerHTML += `
+                    <div class="glass-card p-4 space-y-2">
+                        <h4 class="text-xs font-bold text-purple-200">${d.title}</h4>
+                        <div class="text-right text-base font-bold text-white font-serif leading-loose">${d.arab}</div>
+                        <p class="text-[11px] text-slate-300 italic">Artinya: "${d.arti}"</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Syukur Jurnal
+        function saveSyukur() {
+            const text = document.getElementById('syukurInput').value.trim();
+            if (!text) {
+                showModal('Peringatan', 'Silakan tuliskan rasa syukurnya terlebih dahulu.', 'fa-circle-exclamation');
+                return;
+            }
+
+            let history = JSON.parse(localStorage.getItem('jalur_langit_syukur') || '[]');
+            history.unshift({
+                date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+                text: text
+            });
+            localStorage.setItem('jalur_langit_syukur', JSON.stringify(history));
+            document.getElementById('syukurInput').value = '';
+            renderSyukurHistory();
+            showModal('Alhamdulillah', 'Catatan syukur berhasil disimpan. Semoga nikmatmu semakin ditambah.', 'fa-heart');
+        }
+
+        function renderSyukurHistory() {
+            let history = JSON.parse(localStorage.getItem('jalur_langit_syukur') || '[]');
+            const container = document.getElementById('syukurHistoryList');
+            container.innerHTML = '';
+
+            if (history.length === 0) {
+                container.innerHTML = `<div class="glass-card p-3 text-center text-xs text-purple-400">Belum ada catatan syukur. Yuk tulis hari ini!</div>`;
+                return;
+            }
+
+            history.forEach(item => {
+                container.innerHTML += `
+                    <div class="glass-card p-3 space-y-1">
+                        <div class="flex justify-between items-center text-[10px] text-purple-300">
+                            <span><i class="fa-regular fa-clock"></i> ${item.date}</span>
+                        </div>
+                        <p class="text-xs text-slate-200 leading-relaxed">${item.text}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // Qur'an Tab & Juz Select
+        function populateJuzDropdown() {
+            const select = document.getElementById('quranJuzSelect');
+            select.innerHTML = '';
+            for (let i = 1; i <= 30; i++) {
+                select.innerHTML += `<option value="Juz ${i}">Juz ${i}</option>`;
+            }
+        }
+
+        function saveQuranProgress() {
+            const juz = document.getElementById('quranJuzSelect').value;
+            const detail = document.getElementById('quranDetailInput').value;
+            localStorage.setItem('jalur_langit_quran', JSON.stringify({ juz, detail }));
+            document.getElementById('quranProgressBadge').innerText = juz;
+        }
+
+        function loadQuranProgress() {
+            let saved = localStorage.getItem('jalur_langit_quran');
+            if (saved) {
+                let data = JSON.parse(saved);
+                document.getElementById('quranJuzSelect').value = data.juz || 'Juz 1';
+                document.getElementById('quranDetailInput').value = data.detail || '';
+                document.getElementById('quranProgressBadge').innerText = data.juz || 'Juz 1';
+            }
+        }
+
+        // Surah Modal Details
+        const SURAH_CONTENTS = {
+            'Al-Waqiah': {
+                title: 'Surah Al-Waqiah (The Inevitable)',
+                text: 'Surah Al-Waqiah terdiri atas 96 ayat, termasuk golongan surah Makkiyah. Dinamakan Al-Waqiah diambil dari perkataan Al-Waqiah yang terdapat pada ayat pertama. Keutamaannya sebagai penolak kefakiran dan pembawa kelapangan rezeki bila dibaca setiap malam.'
+            },
+            'Ar-Rahman': {
+                title: 'Surah Ar-Rahman (The Beneficent)',
+                text: 'Surah Ar-Rahman terdiri atas 78 ayat, termasuk golongan surat Makkiyah. Dinamakan Ar-Rahman yang berasal dari kata Ar-Rahman yang terdapat pada ayat pertama surat ini. Mengingatkan manusia akan nikmat Allah yang luar biasa.'
+            },
+            'Al-Mulk': {
+                title: 'Surah Al-Mulk (The Sovereignty)',
+                text: 'Surah Al-Mulk terdiri atas 30 ayat, termaktub dalam juz ke-29. Rasulullah SAW bersabda bahwa Surah Al-Mulk adalah penyelamat yang melindungi pembacanya dari siksa kubur.'
+            },
+            'Yasin': {
+                title: 'Surah Yasin (Yaseen)',
+                text: 'Surah Yasin terdiri atas 83 ayat, termasuk golongan surah Makkiyah. Sering disebut sebagai "Qalbul Qur’an" (Jantung Al-Qur’an) dengan fadhilah kemudahan dalam segala hajat.'
+            }
+        };
+
+        function openSurahModal(surahName) {
+            const surah = SURAH_CONTENTS[surahName];
+            document.getElementById('surahModalTitle').innerText = surah.title;
+            document.getElementById('surahModalContent').innerHTML = `
+                <p class="leading-relaxed">${surah.text}</p>
+                <div class="p-3 bg-purple-950/60 rounded-xl border border-purple-500/20 text-center text-purple-300 font-semibold mt-3">
+                    💡 Rutinkan membaca surah ini setiap hari untuk keberkahan jalur langit.
+                </div>
+            `;
+            document.getElementById('surahModal').classList.remove('hidden');
+        }
+
+        function closeSurahModal() {
+            document.getElementById('surahModal').classList.add('hidden');
+        }
+
+        // Custom Modal Utilities (No alert/confirm)
+        function showModal(title, message, iconClass = 'fa-bell') {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalIcon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            document.getElementById('customModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('customModal').classList.add('hidden');
+        }
+
+        // PWA Install Trigger
+        function installPWA() {
+            if (window.deferredPrompt) {
+                window.deferredPrompt.prompt();
+                window.deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        document.getElementById('installBtn').classList.add('hidden');
+                    }
+                    window.deferredPrompt = null;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
